@@ -19,7 +19,7 @@ def generateSuspects():
     heights = [random.uniform(3, 7) for x in xrange(4)]
 
     for i, j in enumerate(duplicates):
-        suspects[i][x] = suspects[0][x]
+        suspects[i+1][j] = suspects[0][j]
 
     prisonerArray = []
     for x, suspect in enumerate(suspects):
@@ -32,13 +32,16 @@ def generateSuspects():
                 True
             ))
         else:
-            prisonerArray.append(Prisoner(
-                ages[suspect[0]],
-                heights[suspect[1]],
-                jobs[suspect[2]],
-                nationalities[suspect[3]],
-                False
-            ))
+            if suspect == suspects[0]:
+                suspect[x] = [random.randint(0, 3) for x in xrange(0, 4)]
+            else:
+                prisonerArray.append(Prisoner(
+                    ages[suspect[0]],
+                    heights[suspect[1]],
+                    jobs[suspect[2]],
+                    nationalities[suspect[3]],
+                    False
+                ))
 
     random.shuffle(prisonerArray)
 
