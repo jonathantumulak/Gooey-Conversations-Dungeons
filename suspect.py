@@ -12,11 +12,17 @@ class Prisoner(object):
 
 def generateSuspects():
     suspects = [[random.randint(0, 3) for x in xrange(0, 4)] for y in xrange(0, 3)]
-    duplicates = [random.randint(0, 3) for x in xrange(2)]
+    duplicates = []
     nationalities = ['American', 'Filipino', 'Chinese', 'German']
     jobs = ['Butcher', 'Police', 'Doctor', 'Salesman']
     ages = [random.randint(18, 80) for x in xrange(4)]
     heights = [random.uniform(3, 7) for x in xrange(4)]
+
+    duplicate_choices = [x for x in xrange(4)]
+    for _ in xrange(2):
+        choice = random.choice(duplicate_choices)
+        duplicates.append(choice)
+        duplicate_choices.remove(choice)
 
     for i, j in enumerate(duplicates):
         suspects[i+1][j] = suspects[0][j]
