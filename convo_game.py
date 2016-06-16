@@ -37,6 +37,8 @@ p1 = pyglet.image.load('images/prisoner_1.png')
 p2 = pyglet.image.load('images/prisoner_2.png')
 p3 = pyglet.image.load('images/prisoner_3.png')
 lamp = pyglet.image.load('images/lamp_top.png')
+win = pyglet.image.load('images/you_win.png')
+lose = pyglet.image.load('images/you_lose.png')
 
 
 state = 'QUESTION' # QUESTION, ANSWER, GUESS, WIN, LOSE
@@ -186,9 +188,13 @@ def on_key_press(symbol, modifiers):
                 if suspects[active_suspect] == guilty:
                     state = 'WIN'
                     print 'You win!!!'
+                    scene['win'] = pyglet.sprite.Sprite(win, x=300, y=100)
+                    return
                 else:
                     state = 'LOSE'
                     print 'You lose!!'
+                    scene['lose'] = pyglet.sprite.Sprite(lose, x=200, y=140)
+                    return
             if q == 'Pass':
                 pass
             state = 'QUESTION'
@@ -198,6 +204,8 @@ def on_key_press(symbol, modifiers):
             else:
                 active_suspect += 1
             scene['lamp'].x = lamp_pos[active_suspect]
+        if state in ['WIN', 'LOSE']:
+            pyglet.app.exit()
 
     #print '{} key was pressed'.format(symbol)
 
