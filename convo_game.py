@@ -23,28 +23,33 @@ chair = pyglet.image.load('images/prisoner_chair.png')
 p1 = pyglet.image.load('images/prisoner_1.png')
 p2 = pyglet.image.load('images/prisoner_2.png')
 p3 = pyglet.image.load('images/prisoner_3.png')
+lamp = pyglet.image.load('images/lamp_top.png')
 
 
 state = 'QUESTION' # QUESTION, ANSWER, GUESS
 scene = OrderedDict()
 
 scene['chair_0'] = pyglet.sprite.Sprite(chair, x=100, y=200)
-scene['chair_0'].scale = 0.7
+scene['chair_0'].scale = 0.5
 
 scene['chair_1'] = pyglet.sprite.Sprite(chair, x=500, y=200)
-scene['chair_1'].scale = 0.7
+scene['chair_1'].scale = 0.5
 
 scene['chair_2'] = pyglet.sprite.Sprite(chair, x=900, y=200)
-scene['chair_2'].scale = 0.7
+scene['chair_2'].scale = 0.5
 
-scene['p1'] = pyglet.sprite.Sprite(p1, x=140, y=380)
-scene['p1'].scale = 0.7
+scene['p1'] = pyglet.sprite.Sprite(p1, x=125, y=335)
+scene['p1'].scale = 0.5
 
-scene['p2'] = pyglet.sprite.Sprite(p2, x=540, y=380)
-scene['p2'].scale = 0.7
+scene['p2'] = pyglet.sprite.Sprite(p2, x=525, y=335)
+scene['p2'].scale = 0.5
 
-scene['p3'] = pyglet.sprite.Sprite(p3, x=940, y=380)
-scene['p3'].scale = 0.7
+scene['p3'] = pyglet.sprite.Sprite(p3, x=925, y=335)
+scene['p3'].scale = 0.5
+
+scene['lamp'] = pyglet.sprite.Sprite(lamp, x=80, y=240)
+scene['lamp'].scale = 1
+
 
 
 class ConversationDialog(object):
