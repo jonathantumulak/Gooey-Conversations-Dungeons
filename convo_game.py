@@ -4,6 +4,7 @@ from pyglet.text import Label
 
 from pyglet.window import key as keys
 
+from suspect import generateSuspects
 
 window = pyglet.window.Window(width=1280, height=720)
 WW, WH = window.width, window.height
@@ -19,6 +20,18 @@ QUESTIONS = [
     'What is your job?'
 ]
 
+suspects = generateSuspects()
+
+guilty = None
+for s in suspects:
+    if s.guilty is True:
+        guilty = s
+print guilty
+
+active_suspect = 0
+
+lamp_pos = [80, 485, 885]
+
 chair = pyglet.image.load('images/prisoner_chair.png')
 p1 = pyglet.image.load('images/prisoner_1.png')
 p2 = pyglet.image.load('images/prisoner_2.png')
@@ -26,7 +39,7 @@ p3 = pyglet.image.load('images/prisoner_3.png')
 lamp = pyglet.image.load('images/lamp_top.png')
 
 
-state = 'QUESTION' # QUESTION, ANSWER, GUESS
+state = 'QUESTION' # QUESTION, ANSWER, GUESS, WIN, LOSE
 scene = OrderedDict()
 
 scene['chair_0'] = pyglet.sprite.Sprite(chair, x=100, y=200)
@@ -105,6 +118,29 @@ class AnswerDialog(object):
     def draw(self):
         self.label.draw()
 
+class SuspectInfo(object):
+    def __init__(self, suspect):
+        self.suspect = suspect
+        self.x = 800
+        self.y = 300
+        self.labels = []
+        self._build_labels()
+
+    def _build_labels(self):
+        y = 70
+        x = 600
+        self.labels.append(Label('age: {}'.format(self.suspect.age), x=x, y=y, color=QCOLOR))
+        y+= 20
+        self.labels.append(Label('height: {}'.format(self.suspect.height), x=x, y=y, color=QCOLOR))
+        y+= 20
+        self.labels.append(Label('job: {}'.format(self.suspect.job), x=x, y=y, color=QCOLOR))
+        y+= 20
+        self.labels.append(Label('nationality: {}'.format(self.suspect.nationality), x=x, y=y, color=QCOLOR))
+
+    def draw(self):
+        for label in self.labels:
+            label.draw()
+
 
 @window.event
 def on_draw():
@@ -116,6 +152,9 @@ def on_draw():
 @window.event
 def on_key_press(symbol, modifiers):
     global state
+    global active_suspect
+    global suspects
+
     if symbol == keys.UP:
         if state in ['QUESTION', 'GUESS']:
             scene['dialog'].select_up()
@@ -129,30 +168,40 @@ def on_key_press(symbol, modifiers):
             q = scene['dialog'].activate()
             del scene['dialog']
             if q == 'What is your age?':
-                scene['adialog'] = AnswerDialog('22')
+                scene['adialog'] = AnswerDialog(str(suspects[active_suspect].age))
             if q == 'What is your nationality?':
-                scene['adialog'] = AnswerDialog('American')
+                scene['adialog'] = AnswerDialog(str(suspects[active_suspect].nationality))
             if q == 'What is your height?':
-                scene['adialog'] = AnswerDialog('2.5 goos')
+                scene['adialog'] = AnswerDialog(str(suspects[active_suspect].height))
             if q == 'What is your job?':
-                scene['adialog'] = AnswerDialog('Security Guard')
+                scene['adialog'] = AnswerDialog(str(suspects[active_suspect].job))
             state = 'ANSWER'
         elif state == 'ANSWER':
             del scene['adialog']
             state = 'GUESS'
-            scene['dialog'] = ConversationDialog('Do you think I did it?', ['Yes', 'Pass'], (20, 150))
+            scene['dialog'] = ConversationDialog('Do you think I did it?', ['Pass', 'Yes'], (20, 150))
         elif state == 'GUESS':
             q = scene['dialog'].activate()
             if q == 'Yes':
-                pass
+                if suspects[active_suspect] == guilty:
+                    state = 'WIN'
+                    print 'You win!!!'
+                else:
+                    state = 'LOSE'
+                    print 'You lose!!'
             if q == 'Pass':
                 pass
             state = 'QUESTION'
             scene['dialog'] = ConversationDialog('Ask a question', QUESTIONS, (20, 150))
+            if active_suspect == 2:
+                active_suspect = 0
+            else:
+                active_suspect += 1
+            scene['lamp'].x = lamp_pos[active_suspect]
 
     #print '{} key was pressed'.format(symbol)
 
 scene['dialog'] = ConversationDialog('Ask a question', QUESTIONS, (20, 150))
-
+scene['suspect_info'] = SuspectInfo(guilty)
 
 pyglet.app.run()
