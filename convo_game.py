@@ -148,7 +148,7 @@ def on_key_press(symbol, modifiers):
     if symbol == keys.ENTER:
         if state == 'INTRO':
             del scene['intro']
-            state == 'QUESTION'
+            state = 'QUESTION'
             scene['dialog'] = ConversationDialog('Ask a question', QUESTIONS, (20, 150))
             scene['suspect_info'] = SuspectInfo(guilty)
             scene['chair_0'] = pyglet.sprite.Sprite(chair, x=100, y=200)
@@ -172,7 +172,7 @@ def on_key_press(symbol, modifiers):
             scene['lamp'] = pyglet.sprite.Sprite(lamp, x=80, y=240)
             scene['lamp'].scale = 1
             return
-        if state == 'QUESTION':
+        elif state == 'QUESTION':
             q = scene['dialog'].activate()
             del scene['dialog']
             if q == 'What is your age?':
