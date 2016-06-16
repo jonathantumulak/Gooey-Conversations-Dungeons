@@ -9,6 +9,16 @@ WW, WH = window.width, window.height
 QCOLOR = (255, 255, 0, 255)
 CCOLOR = (50, 50, 100, 255)
 SCOLOR = (100, 100, 255, 255)
+ACOLOR = (255, 255, 255, 255)
+
+QUESTIONS = [
+    'What is your age?',
+    'What is your nationality?',
+    'What is your height?',
+    'What is your job?'
+]
+
+state = 'QUESTION' # QUESTION, ANSWER, GUESS
 scene = {}
 
 
@@ -58,12 +68,13 @@ class ConversationDialog(object):
     def activate(self):
         return self.choices[self.active]
 
+class AnswerDialog(object):
+    def __init__(self, answer_text):
+        at = 'The goo says, "{}"'.format(answer_text)
+        self.label = Label(at, x=300, y=300, color=QCOLOR)
 
-# scene['hello_label'] = pyglet.text.Label('Hello, world',
-#                           #font_name='Times New Roman',
-#                           font_size=36,
-#                           x=window.width//2, y=window.height//2,
-#                           anchor_x='center', anchor_y='center')
+    def draw(self):
+        self.label.draw()
 
 
 @window.event
@@ -75,19 +86,44 @@ def on_draw():
 
 @window.event
 def on_key_press(symbol, modifiers):
-    if symbol == keys.ESCAPE:
-        print 'Pressed ESC'
-        return True
+    global state
     if symbol == keys.UP:
-        # print 'UP'
-        scene['dialog'].select_up()
+        if state in ['QUESTION', 'GUESS']:
+            scene['dialog'].select_up()
+
     if symbol == keys.DOWN:
-        # print 'DOWN'
-        scene['dialog'].select_down()
+        if state in ['QUESTION', 'GUESS']:
+            scene['dialog'].select_down()
+
     if symbol == keys.ENTER:
-        print 'Activation Returned:', scene['dialog'].activate()
+        if state == 'QUESTION':
+            q = scene['dialog'].activate()
+            del scene['dialog']
+            if q == 'What is your age?':
+                scene['adialog'] = AnswerDialog('22')
+            if q == 'What is your nationality?':
+                scene['adialog'] = AnswerDialog('American')
+            if q == 'What is your height?':
+                scene['adialog'] = AnswerDialog('2.5 goos')
+            if q == 'What is your job?':
+                scene['adialog'] = AnswerDialog('Security Guard')
+            state = 'ANSWER'
+        elif state == 'ANSWER':
+            del scene['adialog']
+            state = 'GUESS'
+            scene['dialog'] = ConversationDialog('Do you think I did it?', ['Yes', 'Pass'], (20, 200))
+        elif state == 'GUESS':
+            q = scene['dialog'].activate()
+            if q == 'Yes':
+                pass
+            if q == 'Pass':
+                pass
+            state = 'QUESTION'
+            scene['dialog'] = ConversationDialog('Ask a question', QUESTIONS, (20, 200))
+
     #print '{} key was pressed'.format(symbol)
 
-scene['dialog'] = ConversationDialog('Choose your action', ['one', 'two', 'three', 'four'], (20, 200))
+scene['dialog'] = ConversationDialog('Ask a question', QUESTIONS, (20, 200))
+
 
 pyglet.app.run()
