@@ -40,31 +40,11 @@ lamp = pyglet.image.load('images/lamp_top.png')
 win = pyglet.image.load('images/you_win.png')
 lose = pyglet.image.load('images/you_lose.png')
 
+intro = pyglet.image.load('images/you_lose.png')
 
-state = 'QUESTION' # QUESTION, ANSWER, GUESS, WIN, LOSE
+
+state = 'INTRO' # INTRO, QUESTION, ANSWER, GUESS, WIN, LOSE
 scene = OrderedDict()
-
-scene['chair_0'] = pyglet.sprite.Sprite(chair, x=100, y=200)
-scene['chair_0'].scale = 0.5
-
-scene['chair_1'] = pyglet.sprite.Sprite(chair, x=500, y=200)
-scene['chair_1'].scale = 0.5
-
-scene['chair_2'] = pyglet.sprite.Sprite(chair, x=900, y=200)
-scene['chair_2'].scale = 0.5
-
-scene['p1'] = pyglet.sprite.Sprite(p1, x=125, y=335)
-scene['p1'].scale = 0.5
-
-scene['p2'] = pyglet.sprite.Sprite(p2, x=525, y=335)
-scene['p2'].scale = 0.5
-
-scene['p3'] = pyglet.sprite.Sprite(p3, x=925, y=335)
-scene['p3'].scale = 0.5
-
-scene['lamp'] = pyglet.sprite.Sprite(lamp, x=80, y=240)
-scene['lamp'].scale = 1
-
 
 
 class ConversationDialog(object):
@@ -166,6 +146,32 @@ def on_key_press(symbol, modifiers):
             scene['dialog'].select_down()
 
     if symbol == keys.ENTER:
+        if state == 'INTRO':
+            del scene['intro']
+            state == 'QUESTION'
+            scene['dialog'] = ConversationDialog('Ask a question', QUESTIONS, (20, 150))
+            scene['suspect_info'] = SuspectInfo(guilty)
+            scene['chair_0'] = pyglet.sprite.Sprite(chair, x=100, y=200)
+            scene['chair_0'].scale = 0.5
+
+            scene['chair_1'] = pyglet.sprite.Sprite(chair, x=500, y=200)
+            scene['chair_1'].scale = 0.5
+
+            scene['chair_2'] = pyglet.sprite.Sprite(chair, x=900, y=200)
+            scene['chair_2'].scale = 0.5
+
+            scene['p1'] = pyglet.sprite.Sprite(p1, x=125, y=335)
+            scene['p1'].scale = 0.5
+
+            scene['p2'] = pyglet.sprite.Sprite(p2, x=525, y=335)
+            scene['p2'].scale = 0.5
+
+            scene['p3'] = pyglet.sprite.Sprite(p3, x=925, y=335)
+            scene['p3'].scale = 0.5
+
+            scene['lamp'] = pyglet.sprite.Sprite(lamp, x=80, y=240)
+            scene['lamp'].scale = 1
+            return
         if state == 'QUESTION':
             q = scene['dialog'].activate()
             del scene['dialog']
@@ -209,7 +215,7 @@ def on_key_press(symbol, modifiers):
 
     #print '{} key was pressed'.format(symbol)
 
-scene['dialog'] = ConversationDialog('Ask a question', QUESTIONS, (20, 150))
-scene['suspect_info'] = SuspectInfo(guilty)
+scene['intro'] = pyglet.sprite.Sprite(win, x=300, y=100)
+
 
 pyglet.app.run()
