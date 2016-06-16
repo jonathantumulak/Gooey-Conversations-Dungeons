@@ -79,15 +79,15 @@ def on_key_press(symbol, modifiers):
         print 'Pressed ESC'
         return True
     if symbol == keys.UP:
-        print 'UP'
+        # print 'UP'
         scene['dialog'].select_up()
     if symbol == keys.DOWN:
-        print 'DOWN'
+        # print 'DOWN'
         scene['dialog'].select_down()
     if symbol == keys.ENTER:
         print 'Activation Returned:', scene['dialog'].activate()
-    print '{} key was pressed'.format(symbol)
+    #print '{} key was pressed'.format(symbol)
 
-scene['dialog'] = ConversationDialog('Choose your action', ['one', 'two'], (20, 200))
+scene['dialog'] = ConversationDialog('Choose your action', ['one', 'two', 'three', 'four'], (20, 200))
 
 pyglet.app.run()
