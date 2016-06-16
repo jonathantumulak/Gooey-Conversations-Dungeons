@@ -40,31 +40,11 @@ lamp = pyglet.image.load('images/lamp_top.png')
 win = pyglet.image.load('images/you_win.png')
 lose = pyglet.image.load('images/you_lose.png')
 
+intro = pyglet.image.load('images/start.png')
 
-state = 'QUESTION' # QUESTION, ANSWER, GUESS, WIN, LOSE
+
+state = 'INTRO' # INTRO, QUESTION, ANSWER, GUESS, WIN, LOSE
 scene = OrderedDict()
-
-scene['chair_0'] = pyglet.sprite.Sprite(chair, x=100, y=200)
-scene['chair_0'].scale = 0.5
-
-scene['chair_1'] = pyglet.sprite.Sprite(chair, x=500, y=200)
-scene['chair_1'].scale = 0.5
-
-scene['chair_2'] = pyglet.sprite.Sprite(chair, x=900, y=200)
-scene['chair_2'].scale = 0.5
-
-scene['p1'] = pyglet.sprite.Sprite(p1, x=125, y=335)
-scene['p1'].scale = 0.5
-
-scene['p2'] = pyglet.sprite.Sprite(p2, x=525, y=335)
-scene['p2'].scale = 0.5
-
-scene['p3'] = pyglet.sprite.Sprite(p3, x=925, y=335)
-scene['p3'].scale = 0.5
-
-scene['lamp'] = pyglet.sprite.Sprite(lamp, x=80, y=240)
-scene['lamp'].scale = 1
-
 
 
 class ConversationDialog(object):
@@ -79,7 +59,7 @@ class ConversationDialog(object):
     def _build_labels(self):
         self.labels = []
         x, y = 0, 0
-        ql = Label(self.question, x=self.pos[0]+x, y=self.pos[1]+y, color=QCOLOR)
+        ql = Label(self.question, x=self.pos[0]+x, y=self.pos[1]+y, color=QCOLOR, font_name='Droid Sans Mono')
         self.labels.append(ql)
         y -= 20
         n = 0
@@ -88,7 +68,7 @@ class ConversationDialog(object):
                 color = SCOLOR
             else:
                 color = CCOLOR
-            cl = Label(label, x=self.pos[0]+x, y=self.pos[1]+y, color=color)
+            cl = Label(label, x=self.pos[0]+x, y=self.pos[1]+y, color=color, font_name='Droid Sans Mono')
             self.labels.append(cl)
             y -= 20
             n += 1
@@ -115,7 +95,7 @@ class ConversationDialog(object):
 class AnswerDialog(object):
     def __init__(self, answer_text):
         at = 'The goo says, "{}"'.format(answer_text)
-        self.label = Label(at, x=300, y=150, color=QCOLOR)
+        self.label = Label(at, x=300, y=150, color=QCOLOR, font_name='Droid Sans Mono')
 
     def draw(self):
         self.label.draw()
@@ -131,13 +111,13 @@ class SuspectInfo(object):
     def _build_labels(self):
         y = 70
         x = 600
-        self.labels.append(Label('age: {}'.format(self.suspect.age), x=x, y=y, color=QCOLOR))
+        self.labels.append(Label('age: {}'.format(self.suspect.age), x=x, y=y, color=QCOLOR, font_name='Droid Sans Mono'))
         y+= 20
-        self.labels.append(Label('height: {}'.format(self.suspect.height), x=x, y=y, color=QCOLOR))
+        self.labels.append(Label('height: {}'.format(self.suspect.height), x=x, y=y, color=QCOLOR, font_name='Droid Sans Mono'))
         y+= 20
-        self.labels.append(Label('job: {}'.format(self.suspect.job), x=x, y=y, color=QCOLOR))
+        self.labels.append(Label('job: {}'.format(self.suspect.job), x=x, y=y, color=QCOLOR, font_name='Droid Sans Mono'))
         y+= 20
-        self.labels.append(Label('nationality: {}'.format(self.suspect.nationality), x=x, y=y, color=QCOLOR))
+        self.labels.append(Label('nationality: {}'.format(self.suspect.nationality), x=x, y=y, color=QCOLOR, font_name='Droid Sans Mono'))
 
     def draw(self):
         for label in self.labels:
@@ -166,7 +146,33 @@ def on_key_press(symbol, modifiers):
             scene['dialog'].select_down()
 
     if symbol == keys.ENTER:
-        if state == 'QUESTION':
+        if state == 'INTRO':
+            del scene['intro']
+            state = 'QUESTION'
+            scene['dialog'] = ConversationDialog('Ask a question', QUESTIONS, (20, 150))
+            scene['suspect_info'] = SuspectInfo(guilty)
+            scene['chair_0'] = pyglet.sprite.Sprite(chair, x=100, y=200)
+            scene['chair_0'].scale = 0.5
+
+            scene['chair_1'] = pyglet.sprite.Sprite(chair, x=500, y=200)
+            scene['chair_1'].scale = 0.5
+
+            scene['chair_2'] = pyglet.sprite.Sprite(chair, x=900, y=200)
+            scene['chair_2'].scale = 0.5
+
+            scene['p1'] = pyglet.sprite.Sprite(p1, x=125, y=335)
+            scene['p1'].scale = 0.5
+
+            scene['p2'] = pyglet.sprite.Sprite(p2, x=525, y=335)
+            scene['p2'].scale = 0.5
+
+            scene['p3'] = pyglet.sprite.Sprite(p3, x=925, y=335)
+            scene['p3'].scale = 0.5
+
+            scene['lamp'] = pyglet.sprite.Sprite(lamp, x=80, y=240)
+            scene['lamp'].scale = 1
+            return
+        elif state == 'QUESTION':
             q = scene['dialog'].activate()
             del scene['dialog']
             if q == 'What is your age?':
@@ -209,7 +215,7 @@ def on_key_press(symbol, modifiers):
 
     #print '{} key was pressed'.format(symbol)
 
-scene['dialog'] = ConversationDialog('Ask a question', QUESTIONS, (20, 150))
-scene['suspect_info'] = SuspectInfo(guilty)
+scene['intro'] = pyglet.sprite.Sprite(intro, x=0, y=0)
+
 
 pyglet.app.run()
