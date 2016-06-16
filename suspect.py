@@ -19,13 +19,18 @@ def generateSuspects():
     heights = [random.uniform(3, 7) for x in xrange(4)]
 
     duplicate_choices = [x for x in xrange(4)]
-    for _ in xrange(2):
+    for _ in xrange(3):
         choice = random.choice(duplicate_choices)
         duplicates.append(choice)
         duplicate_choices.remove(choice)
 
     for i, j in enumerate(duplicates):
-        suspects[i+1][j] = suspects[0][j]
+        if i < 2:
+            print i
+            suspects[i+1][j] = suspects[0][j]
+        else:
+            print i
+            suspects[i-1][j] = suspects[0][j]
 
     prisonerArray = []
     for x, suspect in enumerate(suspects):
