@@ -1,3 +1,4 @@
+from collections import OrderedDict
 import pyglet
 from pyglet.text import Label
 
@@ -18,9 +19,32 @@ QUESTIONS = [
     'What is your job?'
 ]
 
-state = 'QUESTION' # QUESTION, ANSWER, GUESS
-scene = {}
+chair = pyglet.image.load('images/prisoner_chair.png')
+p1 = pyglet.image.load('images/prisoner_1.png')
+p2 = pyglet.image.load('images/prisoner_2.png')
+p3 = pyglet.image.load('images/prisoner_3.png')
 
+
+state = 'QUESTION' # QUESTION, ANSWER, GUESS
+scene = OrderedDict()
+
+scene['chair_0'] = pyglet.sprite.Sprite(chair, x=100, y=200)
+scene['chair_0'].scale = 0.7
+
+scene['chair_1'] = pyglet.sprite.Sprite(chair, x=500, y=200)
+scene['chair_1'].scale = 0.7
+
+scene['chair_2'] = pyglet.sprite.Sprite(chair, x=900, y=200)
+scene['chair_2'].scale = 0.7
+
+scene['p1'] = pyglet.sprite.Sprite(p1, x=140, y=380)
+scene['p1'].scale = 0.7
+
+scene['p2'] = pyglet.sprite.Sprite(p2, x=540, y=380)
+scene['p2'].scale = 0.7
+
+scene['p3'] = pyglet.sprite.Sprite(p3, x=940, y=380)
+scene['p3'].scale = 0.7
 
 
 class ConversationDialog(object):
@@ -71,7 +95,7 @@ class ConversationDialog(object):
 class AnswerDialog(object):
     def __init__(self, answer_text):
         at = 'The goo says, "{}"'.format(answer_text)
-        self.label = Label(at, x=300, y=300, color=QCOLOR)
+        self.label = Label(at, x=300, y=150, color=QCOLOR)
 
     def draw(self):
         self.label.draw()
@@ -111,7 +135,7 @@ def on_key_press(symbol, modifiers):
         elif state == 'ANSWER':
             del scene['adialog']
             state = 'GUESS'
-            scene['dialog'] = ConversationDialog('Do you think I did it?', ['Yes', 'Pass'], (20, 200))
+            scene['dialog'] = ConversationDialog('Do you think I did it?', ['Yes', 'Pass'], (20, 150))
         elif state == 'GUESS':
             q = scene['dialog'].activate()
             if q == 'Yes':
@@ -119,11 +143,11 @@ def on_key_press(symbol, modifiers):
             if q == 'Pass':
                 pass
             state = 'QUESTION'
-            scene['dialog'] = ConversationDialog('Ask a question', QUESTIONS, (20, 200))
+            scene['dialog'] = ConversationDialog('Ask a question', QUESTIONS, (20, 150))
 
     #print '{} key was pressed'.format(symbol)
 
-scene['dialog'] = ConversationDialog('Ask a question', QUESTIONS, (20, 200))
+scene['dialog'] = ConversationDialog('Ask a question', QUESTIONS, (20, 150))
 
 
 pyglet.app.run()
